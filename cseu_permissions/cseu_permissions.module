@@ -1,0 +1,36 @@
+<?php
+/**
+ * @author antonio.ponte@mfn-berlin.de
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function cseu_permissions_permission() {
+  return array(
+    'administer user configuration' => array(
+      'title' => t('Administer User Configuration')
+    ),
+    'administer user permissions' => array(
+      'title' => t('Administer User Permissions')
+    )
+  );
+}
+
+/**
+* Re-assign the pages to the new permissions
+*/
+function cseu_permissions_menu_alter(&$items) {
+  foreach ($items as $path => &$item) {
+    if (strpos($path, 'admin/config/people') === 0) {
+      $item['access callback'] = 'user_access';
+      $item['access arguments'] = array('administer user configuration');
+    }
+    if (strpos($path, 'admin/people/permissions') === 0) {
+      $item['access callback'] = 'user_access';
+      $item['access arguments'] = array('administer user permissions');
+    }
+  }
+}
+
+

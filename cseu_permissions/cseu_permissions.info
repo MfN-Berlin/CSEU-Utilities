@@ -1,0 +1,11 @@
+name = CSEU Permissions
+description = Separate permissions for administering user configuration and administering users.
+core = 7.x
+package = CSEU Utilities
+
+; Information added by Antonio.Ponte@mfn-berlin.de
+version = "7.x-1.0"
+core = "7.x"
+
+
+
