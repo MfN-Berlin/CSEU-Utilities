@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * Implements hook_block_info().
+ */
+function cseu_blocks_builder_block_info() {
+  $blocks = array();
+
+  $blocks['cseu_footer_banner'] = array(
+    'info' => t('CSEU Footer Banner'),
+  );
+  
+  $blocks['cseu_social_links_bottom'] = array(
+    'info' => t('CSEU Social Links Bottom'),
+  );  
+  return $blocks;
+}
+
+/**
+* Implements hook_block_view().
+*/
+function cseu_blocks_builder_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'cseu_footer_banner':
+      $block['subject'] = '';
+      $block['content'] = _cseu_blocks_builder_cseu_footer_banner_content();
+      break;
+    case 'cseu_social_links_bottom':
+      $block['subject'] = '';
+      $block['content'] = _cseu_blocks_builder_cseu_social_links_content();
+      break;
+  }
+
+  return $block;
+}
+
+function _cseu_blocks_builder_cseu_footer_banner_content() {
+  $theme_path = drupal_get_path('theme', 'cseu_theme');
+  $output = '<div class="cseu-footer-banner">
+    <div class="cseu-footer-banner-cost">
+        <a href="http://www.cost.eu/">
+            <img src="'. $theme_path .'/images/newcost.jpg' .'" alt="COST - European Cooperation in Science and Technology" />
+        </a>
+    </div>
+</div>';
+  
+  return $output;
+}
+
+// Social Links
+function _cseu_blocks_builder_cseu_social_links_content() {
+  $output = '<div class="cseu-footer-social-links">
+    <ul class="cseu-social-links-bottom">';
+/*
+      <li class="linkedin">
+            <a href="https://www.linkedin.com/groups/6547429" title="'. t('CSEU on LinkedIn') .'" target="_blank">
+                <i class="fa fa-linkedin" aria-hidden="true"></i>
+            </a>
+      </li> 
+      <li class="youtube">
+            <a href="https://www.youtube.com/channel/UCTdzrOkdcGvLzCx2YX2JW1g" title="'. t('CSEU on YouTube') .'" target="_blank">
+                <i class="fa fa-youtube" aria-hidden="true"></i>
+            </a>
+        </li>
+*/        
+  $output .=         '<li class="twitter">
+            <a href="https://twitter.com/hashtag/costcs" title="'. t('COST 151212 on Twitter') .'" target="_blank">
+                <i class="fa fa-twitter" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>';
+
+  return $output;
+}
