@@ -5,14 +5,25 @@
  */
 function cseu_blocks_builder_block_info() {
   $blocks = array();
-
-  $blocks['cseu_footer_banner'] = array(
-    'info' => t('CSEU Footer Banner'),
+  $blocks['footer_logos'] = array(
+    'info' => t('CSEU Footer Logos'),
   );
-  
-  $blocks['cseu_social_links_bottom'] = array(
-    'info' => t('CSEU Social Links Bottom'),
+  $blocks['social_links'] = array(
+    'info' => t('CSEU Footer Social Links'),
+  );
+  $blocks['scientists'] = array(
+    'info' => t('CSEU Frontpage Scientists'),
+  );
+  $blocks['countries'] = array(
+    'info' => t('CSEU Frontpage Countries'),
+  );
+  $blocks['working_groups'] = array(
+    'info' => t('CSEU Frontpage Working Groups'),
+  );
+  $blocks['goals'] = array(
+    'info' => t('CSEU Frontpage Goals'),
   );  
+  
   return $blocks;
 }
 
@@ -23,20 +34,36 @@ function cseu_blocks_builder_block_view($delta = '') {
   $block = array();
 
   switch ($delta) {
-    case 'cseu_footer_banner':
+    case 'footer_logos':
       $block['subject'] = '';
-      $block['content'] = _cseu_blocks_builder_cseu_footer_banner_content();
+      $block['content'] = _cseu_blocks_builder_footer_logos_content();
       break;
-    case 'cseu_social_links_bottom':
+    case 'social_links':
       $block['subject'] = '';
-      $block['content'] = _cseu_blocks_builder_cseu_social_links_content();
+      $block['content'] = _cseu_blocks_builder_social_links_content();
+      break;
+    case 'scientists':
+      $block['subject'] = '';
+      $block['content'] = _cseu_blocks_builder_scientists_content();
+      break;
+    case 'countries':
+      $block['subject'] = '';
+      $block['content'] = _cseu_blocks_builder_countries_content();
+      break;
+    case 'working_groups':
+      $block['subject'] = '';
+      $block['content'] = _cseu_blocks_builder_working_groups_content();
+      break;
+    case 'goals':
+      $block['subject'] = '';
+      $block['content'] = _cseu_blocks_builder_goals_content();
       break;
   }
 
   return $block;
 }
 
-function _cseu_blocks_builder_cseu_footer_banner_content() {
+function _cseu_blocks_builder_footer_logos_content() {
   $theme_path = drupal_get_path('theme', 'cseu_theme');
   $output = '<div class="cseu-footer-banner">
     <div class="cseu-footer-banner-cost">
@@ -50,7 +77,7 @@ function _cseu_blocks_builder_cseu_footer_banner_content() {
 }
 
 // Social Links
-function _cseu_blocks_builder_cseu_social_links_content() {
+function _cseu_blocks_builder_social_links_content() {
   $output = '<div class="cseu-footer-social-links">
     <ul class="cseu-social-links-bottom">';
 /*
@@ -75,3 +102,59 @@ function _cseu_blocks_builder_cseu_social_links_content() {
 
   return $output;
 }
+
+// Number of scientists
+function _cseu_blocks_builder_scientists_content() {
+  $query = "SELECT count(p.pid) AS scientists 
+    FROM {profile} p 
+    LEFT JOIN {field_data_field_cseu_last_name} l ON p.pid = l.entity_id AND l.entity_type = 'profile2' 
+    LEFT JOIN {field_data_field_cseu_first_name} f ON p.pid = f.entity_id AND f.entity_type = 'profile2' 
+    WHERE (p.type IN ('cseu_profile_personal')) 
+        AND (l.field_cseu_last_name_value IS NOT NULL) 
+        AND (f.field_cseu_first_name_value IS NOT NULL)";
+  $sesult = db_query($query)->fetchField();
+  
+  $output = '<div class="cseu-misc-block">
+    <h2>Scientists</h2>
+    <div class="cseu-misc-block-number">'. $sesult .'</div>
+  </div>';
+
+  return $output;
+}
+
+// Number of countries
+function _cseu_blocks_builder_countries_content() {
+  $query = "SELECT DISTINCT field_cseu_address_country FROM {field_data_field_cseu_address}";
+  $sesult = db_query($query)->rowCount();
+  $output = '<div class="cseu-misc-block">
+    <h2>Countries</h2>
+    <div class="cseu-misc-block-number">'. $sesult .'</div>
+  </div>';
+
+  return $output;
+}
+
+// Number of WGs
+function _cseu_blocks_builder_working_groups_content() {
+  $query = "SELECT count(n.nid) FROM {node} n WHERE (n.status = '1') AND (n.type IN  ('cseu_working_group'))";
+  $sesult = db_query($query)->fetchField();
+  $output = '<div class="cseu-misc-block">
+    <h2>Working Groups</h2>
+    <div class="cseu-misc-block-number">'. $sesult .'</div>
+  </div>';
+
+  return $output;
+}
+
+// Number of goals
+function _cseu_blocks_builder_goals_content() {
+  $query = "SELECT abc FROM xyz";
+  $sesult = 1;
+  $output = '<div class="cseu-misc-block">
+    <h2>Goals</h2>
+    <div class="cseu-misc-block-number">'. $sesult .'</div>
+  </div>';
+
+  return $output;
+}
+
