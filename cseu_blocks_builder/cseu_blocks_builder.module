@@ -22,8 +22,8 @@ function cseu_blocks_builder_block_info() {
   );
   $blocks['goals'] = array(
     'info' => t('CSEU Frontpage Goals'),
-  );  
-  
+  );
+
   return $blocks;
 }
 
@@ -68,11 +68,11 @@ function _cseu_blocks_builder_footer_logos_content() {
   $output = '<div class="cseu-footer-banner">
     <div class="cseu-footer-banner-cost">
         <a href="http://www.cost.eu/">
-            <img src="/'. $theme_path .'/images/newcost.jpg' .'" alt="COST - European Cooperation in Science and Technology" />
+            <img src="/'. $theme_path .'/images/newcost.png' .'" alt="COST - European Cooperation in Science and Technology" />
         </a>
     </div>
 </div>';
-  
+
   return $output;
 }
 
@@ -85,13 +85,13 @@ function _cseu_blocks_builder_social_links_content() {
             <a href="https://www.linkedin.com/groups/6547429" title="'. t('CSEU on LinkedIn') .'" target="_blank">
                 <i class="fa fa-linkedin" aria-hidden="true"></i>
             </a>
-      </li> 
+      </li>
       <li class="youtube">
             <a href="https://www.youtube.com/channel/UCTdzrOkdcGvLzCx2YX2JW1g" title="'. t('CSEU on YouTube') .'" target="_blank">
                 <i class="fa fa-youtube" aria-hidden="true"></i>
             </a>
         </li>';
-*/    
+*/
   $output .=         '<li class="twitter">
             <a href="https://twitter.com/hashtag/costcs" title="'. t('COST 151212 on Twitter') .'" target="_blank">
                 <i class="fa fa-twitter" aria-hidden="true"></i>
@@ -105,15 +105,15 @@ function _cseu_blocks_builder_social_links_content() {
 
 // Number of scientists
 function _cseu_blocks_builder_scientists_content() {
-  $query = "SELECT count(p.pid) AS scientists 
-    FROM {profile} p 
-    LEFT JOIN {field_data_field_cseu_last_name} l ON p.pid = l.entity_id AND l.entity_type = 'profile2' 
-    LEFT JOIN {field_data_field_cseu_first_name} f ON p.pid = f.entity_id AND f.entity_type = 'profile2' 
-    WHERE (p.type IN ('cseu_profile_personal')) 
-        AND (l.field_cseu_last_name_value IS NOT NULL) 
+  $query = "SELECT count(p.pid) AS scientists
+    FROM {profile} p
+    LEFT JOIN {field_data_field_cseu_last_name} l ON p.pid = l.entity_id AND l.entity_type = 'profile2'
+    LEFT JOIN {field_data_field_cseu_first_name} f ON p.pid = f.entity_id AND f.entity_type = 'profile2'
+    WHERE (p.type IN ('cseu_profile_personal'))
+        AND (l.field_cseu_last_name_value IS NOT NULL)
         AND (f.field_cseu_first_name_value IS NOT NULL)";
   $sesult = db_query($query)->fetchField();
-  
+
   $output = '<div class="cseu-misc-block">
     <h2>Scientists</h2>
     <div class="cseu-misc-block-number">'. $sesult .'</div>
