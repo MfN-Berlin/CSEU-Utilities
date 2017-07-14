@@ -1,0 +1,6 @@
+name = CSEU View Modes Builder
+description = Build custom view modes.
+package = CSEU Utilities
+core = 7.x
+version = "7.x-1.0"
+
