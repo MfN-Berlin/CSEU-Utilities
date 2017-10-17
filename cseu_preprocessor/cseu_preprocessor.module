@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * Implements hook_preprocess_views_view_field().
+ */
+function cseu_preprocessor_preprocess_views_view_field(&$variables) {
+  $view = $variables['view'];
+  
+  /**
+   * View: 
+   */
+  if (!empty($view) && $view->name == 'cseu_wgs_list_view') {
+    if ($view->current_display = 'wgs') {
+      // Number of members
+      if ($variables['field']->options['id'] == 'nothing_2') {
+        $nid = $variables['row']->nid;
+        $nr_members = _cseu_preprocessor_count_wg_members($nid);
+        $variables['output'] = str_replace(":nr_members", $nr_members, $variables['output']);
+        
+      }
+    }
+  }  
+}
+
+
+function _cseu_preprocessor_count_wg_members($wg_id) {
+  $nr_members = db_query("SELECT COUNT(u.uid) FROM {node} n
+    INNER JOIN {field_data_field_cseu_groups_interest} g ON n.nid = g.field_cseu_groups_interest_target_id 
+                AND (g.entity_type = 'profile2' AND g.deleted = '0')
+    INNER JOIN {profile} p1 ON g.entity_id = p1.pid
+    INNER JOIN {users} u ON p1.uid = u.uid
+    INNER JOIN {profile} p ON u.uid = p.uid AND p.type = 'cseu_profile_personal'
+    WHERE (( (n.nid = :wg_id ) )AND(( (n.status = '1') AND (n.type IN  ('cseu_working_group')) )))",
+    array(':wg_id' => $wg_id)
+  )->fetchField();
+
+  return $nr_members;
+}
+
