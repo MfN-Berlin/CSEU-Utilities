@@ -5,9 +5,9 @@
  */
 function cseu_preprocessor_preprocess_views_view_field(&$variables) {
   $view = $variables['view'];
-  
+
   /**
-   * View: 
+   * View:
    */
   if (!empty($view) && $view->name == 'cseu_wgs_list_view') {
     if ($view->current_display = 'wgs') {
@@ -19,36 +19,42 @@ function cseu_preprocessor_preprocess_views_view_field(&$variables) {
         $variables['output'] = str_replace(":nr_members", $nr_members, $variables['output']);
         // Upcoming event
         $event = _cseu_preprocessor_next_wg_event($nid);
-        $variables['output'] = str_replace(":upcoming_event", $event, $variables['output']);
+        if (empty($event)) {
+          $variables['output'] = str_replace(':cseu-wgs-event-class', 'cseu-wgs-event-hidden', $variables['output']);
+          $variables['output'] = str_replace(':upcoming_event', 'No upcoming events.', $variables['output']);
+        } else {
+          $variables['output'] = str_replace(':cseu-wgs-event-class', 'cseu-wgs-event-visible', $variables['output']);
+          $variables['output'] = str_replace(':upcoming_event', $event, $variables['output']);
+        }
       }
     }
-  }  
+  }
 }
 
 
 function _cseu_preprocessor_count_wg_members($wg_id) {
   $nr_members = db_query("
-SELECT 
-    COUNT(u.uid) 
-FROM 
-    {node} n 
-    INNER JOIN {field_data_field_cseu_groups_interest} g ON n.nid = g.field_cseu_groups_interest_target_id 
+SELECT
+    COUNT(u.uid)
+FROM
+    {node} n
+    INNER JOIN {field_data_field_cseu_groups_interest} g ON n.nid = g.field_cseu_groups_interest_target_id
     AND (
-        g.entity_type = 'profile2' 
+        g.entity_type = 'profile2'
         AND g.deleted = '0'
-    ) 
-    INNER JOIN {profile} p ON g.entity_id = p.pid 
-    INNER JOIN {users} u ON p.uid = u.uid 
-    INNER JOIN {profile} p1 ON u.uid = p1.uid 
-    AND p1.type = 'cseu_profile_personal' 
-WHERE 
+    )
+    INNER JOIN {profile} p ON g.entity_id = p.pid
+    INNER JOIN {users} u ON p.uid = u.uid
+    INNER JOIN {profile} p1 ON u.uid = p1.uid
+    AND p1.type = 'cseu_profile_personal'
+WHERE
     (
         (
             (n.nid = :wg_id)
-        ) 
+        )
         AND(
             (
-                (n.status = '1') 
+                (n.status = '1')
                 AND (
                     n.type IN ('cseu_working_group')
                 )
@@ -56,55 +62,55 @@ WHERE
         )
     )
     ", array(':wg_id' => $wg_id)
-  )->fetchField();  
-  
+  )->fetchField();
+
   return l($nr_members, 'wgs/'. $wg_id .'/members');
 }
 
 
 function _cseu_preprocessor_next_wg_event($wg_id) {
   $result = db_query("
-SELECT 
-    n2.nid AS nid, 
-    n2.title AS title, 
-    DATE_FORMAT(STR_TO_DATE(e.field_cseu_event_date_value, '%Y-%m-%dT%T'), '%Y-%m-%d') AS date1, 
+SELECT
+    n2.nid AS nid,
+    n2.title AS title,
+    DATE_FORMAT(STR_TO_DATE(e.field_cseu_event_date_value, '%Y-%m-%dT%T'), '%Y-%m-%d') AS date1,
     DATE_FORMAT(STR_TO_DATE(e.field_cseu_event_date_value2, '%Y-%m-%dT%T'), '%Y-%m-%d') AS date2
-FROM 
-    {node} n 
-    LEFT JOIN {field_data_field_working_group} g ON n.nid = g.field_working_group_target_id 
+FROM
+    {node} n
+    LEFT JOIN {field_data_field_working_group} g ON n.nid = g.field_working_group_target_id
     AND (
-        g.entity_type = 'node' 
+        g.entity_type = 'node'
         AND g.deleted = '0'
-    ) 
-    LEFT JOIN {node} n2 ON g.entity_id = n2.nid 
-    LEFT JOIN {field_data_field_cseu_event_date} e ON n2.nid = e.entity_id 
+    )
+    LEFT JOIN {node} n2 ON g.entity_id = n2.nid
+    LEFT JOIN {field_data_field_cseu_event_date} e ON n2.nid = e.entity_id
     AND (
-        e.entity_type = 'node' 
+        e.entity_type = 'node'
         AND e.deleted = '0'
-    ) 
-WHERE 
+    )
+WHERE
     (
         (
             (n.nid = :wg_id)
-        ) 
+        )
         AND (
             (
-                (n.status = '1') 
+                (n.status = '1')
                 AND (
                     n.type IN ('cseu_working_group')
-                ) 
+                )
                 AND (
                     e.field_cseu_event_date_value > NOW()
                 )
             )
         )
-    ) 
-ORDER BY 
-    e.field_cseu_event_date_value ASC 
-LIMIT 
+    )
+ORDER BY
+    e.field_cseu_event_date_value ASC
+LIMIT
     1
   ", array(':wg_id' => $wg_id));
-  
+
   $record = $result->fetchObject();
   if (!empty($record)) {
     $link_title = $record->title .', ';
@@ -112,9 +118,10 @@ LIMIT
     $event = l($link_title, 'node/'. $record->nid);
   }
   else {
-    $event = 'No upcoming events.';
-  } 
-  
+    //$event = 'No upcoming events.';
+    $event = '';
+  }
+
   return $event;
 }
 
