@@ -170,7 +170,7 @@ function _cseu_blocks_builder_icons_content() {
   $theme_path = drupal_get_path('theme', 'cseu_theme');
   $output = '<div class="cseu-icons-block">
   <div class="cseu-icon-block">
-    <a class="cseu-icon-block-link" href="/news/tutorials" title=""How to register">
+    <a class="cseu-icon-block-link" href="'. url('node/346') .'" title=""How to register">
       <div class="cseu-icon-block-picture">
         <img src="'. $theme_path .'/images/icon-how-to-register.png' .'" alt="How to register" />
       </div>
@@ -178,7 +178,7 @@ function _cseu_blocks_builder_icons_content() {
     </a>
   </div>
   <div class="cseu-icon-block">
-    <a class="cseu-icon-block-link" href="/faq#how-can-i-request-membership-for-a-working-group-" title=""Joining Working Groups">
+    <a class="cseu-icon-block-link" href="/files/how-become-part-working-group" title=""Joining Working Groups">
       <div class="cseu-icon-block-picture">
         <img src="/'. $theme_path .'/images/icon-joining-wg.png' .'" alt="Joining Working Groups" />
       </div>
@@ -186,7 +186,7 @@ function _cseu_blocks_builder_icons_content() {
     </a>
   </div>
   <div class="cseu-icon-block">
-    <a class="cseu-icon-block-link" href="/news/basic-information-reimbursement" title=""Funding Opportunities">
+    <a class="cseu-icon-block-link" href="'. url('node/496') .'" title=""Funding Opportunities">
       <div class="cseu-icon-block-picture">
         <img src="/'. $theme_path .'/images/icon-funding-opportunities.png' .'" alt="Funding Opportunities" />
       </div>
